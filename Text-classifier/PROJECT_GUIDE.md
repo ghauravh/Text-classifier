@@ -127,7 +127,26 @@ The output shows the predicted label and probability for every class. A confiden
 
 To use the neural network instead, select `artifacts/neural_model.joblib`.
 
-## 13. Use Your Own Dataset
+## 13. Use the FastAPI Service
+
+Install the API dependencies, then start the server from the project folder:
+
+```powershell
+py -m pip install -r requirements.txt
+py -m uvicorn api:app --reload
+```
+
+Send user text to `http://127.0.0.1:8000/predict` as JSON:
+
+```powershell
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/predict `
+	-ContentType "application/json" `
+	-Body '{"text":"Claim your free reward now","model":"logistic"}'
+```
+
+The response includes the predicted label, winning confidence, and confidence scores for every label. Open `http://127.0.0.1:8000/docs` for the interactive API page.
+
+## 14. Use Your Own Dataset
 
 Create a UTF-8 CSV with this shape:
 
@@ -145,7 +164,7 @@ py app.py train --data path\to\your_data.csv
 
 Use many examples from the real problem domain, check labels carefully, remove sensitive information, and confirm that duplicates do not cross partitions.
 
-## 14. Suggested Experiments
+## 15. Suggested Experiments
 
 1. Change logistic regression `C` to `0.1` and `10.0`.
 2. Change neural-network `alpha` to `0.0001` and `0.01`.
