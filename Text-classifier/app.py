@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import argparse
 import json
 import re
 from datetime import datetime, timezone
@@ -159,36 +158,3 @@ def predict_text_result(model_path: Path, text: str) -> dict[str, Any]:
 	}
 
 
-def predict_text(model_path: Path, text: str) -> None:
-	"""Load a fitted pipeline and classify one new message."""
-	result = predict_text_result(model_path, text)
-	print(f"Prediction: {result['prediction']}")
-	print("Confidence scores:")
-	for label, probability in result["scores"].items():
-		print(f"  {label}: {probability:.2%}")
-
-
-def parse_arguments() -> argparse.Namespace:
-	"""Define the train and predict command-line interfaces."""
-	parser = argparse.ArgumentParser(description="Train and use a TF-IDF text classifier.")
-	subparsers = parser.add_subparsers(dest="command", required=True)
-	train_parser = subparsers.add_parser("train", help="Train and evaluate both models.")
-	train_parser.add_argument("--data", type=Path, default=Path("data/messages.csv"))
-	train_parser.add_argument("--output-dir", type=Path, default=Path("artifacts"))
-	predict_parser = subparsers.add_parser("predict", help="Classify one text message.")
-	predict_parser.add_argument("--model", type=Path, required=True)
-	predict_parser.add_argument("--text", required=True)
-	return parser.parse_args()
-
-
-def main() -> None:
-	"""Route the selected command to its workflow."""
-	arguments = parse_arguments()
-	if arguments.command == "train":
-		train_models(arguments.data, arguments.output_dir)
-	else:
-		predict_text(arguments.model, arguments.text)
-
-
-if __name__ == "__main__":
-	main()
