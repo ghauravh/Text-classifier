@@ -8,14 +8,18 @@ A learning project that classifies messages as `ham` or `spam` with TF-IDF featu
 py -m venv .venv
 .venv\Scripts\Activate.ps1
 py -m pip install -r requirements.txt
-py app.py train
-py app.py predict --model artifacts/logistic_model.joblib --text "Claim your free reward now"
+py -m uvicorn api:app --reload
 ```
 
-Train with your own UTF-8 CSV by providing `text` and `label` columns:
+The API is available at `http://127.0.0.1:8000/docs`. It uses the trained model artifacts in `artifacts/` to classify messages.
 
-```powershell
-py app.py train --data path\to\messages.csv --output-dir artifacts
+Train models from Python with your own UTF-8 CSV by providing `text` and `label` columns:
+
+```python
+from pathlib import Path
+from app import train_models
+
+train_models(Path("path/to/messages.csv"), Path("artifacts"))
 ```
 
 Run the tests with:
