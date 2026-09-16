@@ -68,10 +68,13 @@ Words such as "prize" and phrases such as "claim now" can therefore become usefu
 
 ## 8. Train Both Models
 
-Run:
+Call the reusable training function:
 
-```powershell
-py app.py train
+```python
+from pathlib import Path
+from app import train_models
+
+train_models(Path("data/messages.csv"), Path("artifacts"))
 ```
 
 `build_model()` creates a scikit-learn `Pipeline`. The pipeline first transforms text with TF-IDF and then fits one classifier:
@@ -117,10 +120,17 @@ JSON Lines keeps each experiment on its own line and can be loaded later with pa
 
 ## 12. Classify New Text
 
-After training, run:
+After training, call the reusable prediction function:
 
-```powershell
-py app.py predict --model artifacts/logistic_model.joblib --text "Claim your free cash prize now"
+```python
+from pathlib import Path
+from app import predict_text_result
+
+result = predict_text_result(
+	Path("artifacts/logistic_model.joblib"),
+	"Claim your free cash prize now",
+)
+print(result)
 ```
 
 The output shows the predicted label and probability for every class. A confidence score is the model's estimated probability, not a guarantee that the answer is correct. Confidence can be poorly calibrated, especially with this tiny dataset.
@@ -156,10 +166,13 @@ Are we still meeting at five,ham
 Click now to collect your reward,spam
 ```
 
-Then run:
+Then pass the dataset path to `train_models()`:
 
-```powershell
-py app.py train --data path\to\your_data.csv
+```python
+from pathlib import Path
+from app import train_models
+
+train_models(Path("path/to/your_data.csv"), Path("artifacts"))
 ```
 
 Use many examples from the real problem domain, check labels carefully, remove sensitive information, and confirm that duplicates do not cross partitions.
